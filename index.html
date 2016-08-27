@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>God's Market</title>
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<body>
+		<div ng-app="game">
+			<div id="possessions" ng-controller="possessionsCtrl">
+				<h3>Possessions</h3>
+				<ul>
+					<li ng-repeat="person in possesions.villagers">
+						'{{person.name}}' <span class="stats">{{person.food}} <img src="Meat.png" alt="Food" height=18em width=18em> </span>
+					</li>
+					<hr>
+					<li ng-repeat="thing in possesions.materials">
+						{{thing.number}} {{thing.type}}
+					</li>
+				</ul>
+
+			</div>
+			<div id="villiageView">
+			</div>
+			<div id="trading" ng-controller="tradeCtrl">
+				<h3>Trade with God</h3>
+				<ul>
+					<li ng-repeat="trade in tradeOptions">
+						{{trade.sell.number}} {{trade.sell.name}} → {{trade.buy.number}} {{trade.buy.name}}
+						<span class="trade" ng-click="exchange(trade)">Trade</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.js"></script>
+		<script src="app.js"></script>
+
+	</body>
+</html>
