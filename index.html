@@ -7,34 +7,62 @@
 	</head>
 	<body>
 		<div ng-app="game">
-			<div id="possessions" ng-controller="possessionsCtrl">
-				<h3>Possessions</h3>
-				<ul>
-					<li ng-repeat="person in possesions.villagers">
-						'{{person.name}}' <span class="stats">{{person.food}} <img src="Meat.png" alt="Food" height=18em width=18em> </span>
-					</li>
-					<hr>
-					<li ng-repeat="thing in possesions.materials">
-						{{thing.number}} {{thing.type}}
-					</li>
-				</ul>
+			<div id="statsPanel" ng-controller="statsCtrl">
+				<h3>Day {{world.day}}</h3>
+			</div>
+			<div id="villageView" ng-controller="gameCtrl">
+				<canvas height="400px" id="canvas">
+				</canvas>
+			</div>
 
+			<div id="sidebar">
+				<div id="village" ng-controller="statsCtrl">
+					<h3>Village</h3>
+					<ul>
+						<li>
+							Crop Health <span class="stats">90% <img src="CropIcon.png" alt="Food" height=18em width=18em> </span>
+						</li>
+						<li>
+							Weather
+							<span class="stats">
+								<span ng-if="world.weather=='sun'">Sun <img src="Sun.png" alt="" height=18em width=18em></span>
+								<span ng-if="world.weather=='rain'">Rain <img src="Rain.png" alt="" height=18em width=18em></span>
+							</span>
+						</li>
+					</ul>
+
+				</div>
+
+				<div id="possessions" ng-controller="possessionsCtrl">
+					<h3>Assets</h3>
+					<ul>
+						<li ng-repeat="person in possesions.villagers">
+							Villager {{person.name}} <span class="stats">{{person.food}} <img src="Meat.png" alt="Food" height=18em width=18em> </span>
+						</li>
+						<hr>
+						<li ng-repeat="thing in possesions.materials">
+							{{thing.number}} {{thing.name}}
+						</li>
+					</ul>
+
+				</div>
+
+				<div id="trading" ng-controller="tradeCtrl">
+					<h3>Trade with God</h3>
+					<ul>
+						<li ng-repeat="trade in tradeOptions">
+							{{trade.sell.number}} {{trade.sell.name}} → {{trade.buy.number}} {{trade.buy.name}}
+							<span class="trade" ng-click="exchange(trade)">Trade</span>
+						</li>
+					</ul>
+				</div>
 			</div>
-			<div id="villiageView">
-			</div>
-			<div id="trading" ng-controller="tradeCtrl">
-				<h3>Trade with God</h3>
-				<ul>
-					<li ng-repeat="trade in tradeOptions">
-						{{trade.sell.number}} {{trade.sell.name}} → {{trade.buy.number}} {{trade.buy.name}}
-						<span class="trade" ng-click="exchange(trade)">Trade</span>
-					</li>
-				</ul>
-			</div>
+
 		</div>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.js"></script>
 		<script src="app.js"></script>
+		<script src="gameCtrl.js"></script>
 
 	</body>
 </html>
