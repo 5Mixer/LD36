@@ -1,5 +1,26 @@
 app.controller('gameCtrl', function($scope,village){
 
+
+	function allocateHuts (){
+		var numHuts = village.possesions.huts.length;
+		//Clear all huts.
+		for (var i=0; i < numHuts; i++){
+			village.possesions.huts[i].inhabitants = [];
+		}
+		//For every villagers
+		for (var v = 0; v < village.possesions.villagers.length; v++){
+			//Loop through the huts
+			for (var i=0; i < numHuts; i++){
+				//If the hut isn't full, put player in it.
+				if (village.possesions.huts[i].inhabitants.length < village.possesions.huts[i].maxSize){
+					village.possesions.villagers[v].hut = village.possesions.huts[i];
+					village.possesions.huts[i].inhabitants.push(village.possesions.villagers[v]);
+					break;
+				}
+			}
+		}
+	}
+
 	$scope.$watch( function () { return village.possesions.villagers; }, function (villagers) {
 
 		var numVillagers = villagers.length;
@@ -28,7 +49,13 @@ app.controller('gameCtrl', function($scope,village){
 			villagers[i].roleNumber = ++idleNumber;
 		}
 
-	 }, true);
+	}, true);
+
+	$scope.$watch( function () { return [village.possesions.huts.length,village.possesions.villagers.length]; }, function (huts) {
+
+ 		allocateHuts();
+
+ 	 }, true);
 
 	var cdom = document.getElementById("canvas");
 	var c = cdom.getContext("2d");
@@ -44,25 +71,40 @@ app.controller('gameCtrl', function($scope,village){
 	}
 	function mouseMove (e){
 		var pos = getMousePos(e);
-		cam.x = Math.max(0,Math.min((pos.x/(cdom.width/50)),100));
-		cam.y = Math.max(0,Math.min((pos.y/(cdom.height/25)),50));
+		cam.x = Math.floor(Math.max(0,Math.min((pos.x/(cdom.width/50)),100)));
+		cam.y = Math.floor(Math.max(0,Math.min((pos.y/(cdom.height/25)),50)));
 
 	}
 
 	cdom.setAttribute('width', Math.floor(window.getComputedStyle(cdom).width/100)*100);
 	cdom.setAttribute('height', Math.floor(cdom.width/2));
 
+	width = cdom.width;
+	height = cdom.height;
+
+	$scope.gameActive = village.world.active;
 
 	var tick = function(){
-		village.world.day++;
 
-		village.world.weather = Math.sin(village.world.day)+(Math.random()*.25)-.125 > 0.5 ? "sun" : "rain";
+		if (village.world.active == false){
+			return;
+		}
+
+		if (village.possesions.villagers.length < 1){
+			$scope.gameActive = false;
+			village.world.active = false;
+		}
+
+		village.world.day++;
+		village.world.weather = Math.random() > 0.4 ? "sun" : "rain";
 
 		if (village.world.weather == "sun" && village.world.cropsMoisture > -2){
 			village.world.cropsMoisture--;
+			rain.enabled = false;
 		}
 		if (village.world.weather == "rain" && village.world.cropsMoisture < 2){
 			village.world.cropsMoisture++;
+			rain.enabled = true;
 		}
 
 		var playerLength = village.possesions.villagers.length;
@@ -112,6 +154,9 @@ app.controller('gameCtrl', function($scope,village){
 	c.msImageSmoothingEnabled = false;
 	c.imageSmoothingEnabled = false;
 
+	var rain = new Rain();
+	rain.enabled = true;
+
 
 	console.log(cdom.width)
 
@@ -130,10 +175,12 @@ app.controller('gameCtrl', function($scope,village){
 		}
 
 
+
 		cam.reset(c);
+		rain.draw(c);
 
 		c.save();
-		c.globalAlpha = Math.abs(Math.sin(60+ t/60)) * 0.5;
+		c.globalAlpha = Math.abs(Math.sin(60+ t/60)) * 0.3;
 		c.drawImage(vignette, 0,0, cdom.width, cdom.height);
 		c.restore();
 

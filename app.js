@@ -17,7 +17,10 @@ app.factory('village', function(){
 			{ name: "food", number: 802},
 			{ name: "rock", number: 23}
 		],
-		huts: []
+		huts: [
+            new Hut(0),
+            new Hut(1)
+        ]
 	}
 
 	for (var i=0; i<3; i++){
@@ -28,7 +31,8 @@ app.factory('village', function(){
 		day:0,
 		weather: "rain",
 		cropsMoisture : 0, //Will vary between -2 (very dry) to 2 (flooded)
-		cropsEfficiency : 100
+		cropsEfficiency : 100,
+        active : true
 	};
 
 	return {
@@ -108,12 +112,23 @@ snd.volume = 0.4;
 app.controller('tradeCtrl', function($scope,village){
 	$scope.tradeOptions = [
 		{ sell: { number: 1, name: 'villager'}, buy: { number: 50, name: 'food'}},
-		{ sell: { number: 100, name: 'rock'}, buy: { name: 'sun'}},
-		{ sell: { number: 100, name: 'rock'}, buy: { name: 'rain'}},
 		{ sell: { number: 10, name: 'rock'}, buy: { number: 5, name: 'food'}},
 		{ sell: { number: 400, name: 'food'}, buy: { number: 1, name: 'hut'}},
+		{ sell: { number: 20, name: 'food'}, buy: { number: 1, name: 'pickaxe'}},
+		{ sell: { number: 50, name: 'rock'}, buy: { number: 1, name: 'scythe'}},
 		{ sell: { number: 100, name: 'stone'}, buy: { number: 1, name: 'hut'}},
-		{ sell: { number: 200, name: 'food'}, buy: { number: 1, name: 'villager'}}
+		{ sell: { number: 200, name: 'food'}, buy: { number: 1, name: 'villager'}, tooltip: function(){
+            var avaliableSpot = false;
+            for (i=0; i < village.possesions.huts.length; i++){
+                if (village.possesions.huts[i].inhabitants.length < 3){
+                    avaliableSpot = true;
+                    break;
+                }
+            }
+            if (avaliableSpot == false){
+                return "A new hut must be created to house a villager.";
+            }
+        }}
 	];
 
 
@@ -161,11 +176,20 @@ app.controller('tradeCtrl', function($scope,village){
 		if (tradeAble){
 			//They have sold, give them the return.
 			if (trade.buy.name == "villager"){
-				village.possesions.villagers.push(new Villager());
+                var avaliableSpot = false;
+                for (i=0; i < village.possesions.huts.length; i++){
+                    if (village.possesions.huts[i].inhabitants.length < 3){
+                        avaliableSpot = true;
+                        break;
+                    }
+                }
+                if (avaliableSpot){
+
+                    village.possesions.villagers.push(new Villager());
+                }
             }else if (trade.buy.name == "hut") {
                 if (village.possesions.huts.length < 6){
                     tradeAble = true;
-                    console.log("Making hut");
                     village.possesions.huts.push(new Hut(village.possesions.huts.length));
                 }
 			}else{

@@ -46,6 +46,8 @@ var Villager = function (){
 	this.name = randomName();
 	this.food = 10;
 
+	this.hut = undefined;
+
 	var location = locations[this.role][0];
 	this.x = location.x*2; //Because the map is scale x2.
 	this.y = location.y*2;

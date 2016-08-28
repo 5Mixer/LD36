@@ -4,11 +4,25 @@
 		<meta charset="utf-8">
 		<title>God's Market</title>
 		<link rel="stylesheet" type="text/css" href="style.css">
+		<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/ng-dialog/0.4.0/css/ngDialog.min.css">
+		<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/ng-dialog/0.4.0/css/ngDialog-theme-default.min.css">
+		<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/ng-dialog/0.4.0/css/ngDialog-theme-plain.min.css">
+
+
 	</head>
 	<body>
 		<div ng-app="game">
 			<div id="statsPanel" ng-controller="statsCtrl">
 				<h3>Day {{world.day}}</h3>
+
+				<div ng-if="world.active == false ">
+					You failed to keep your villagers alive. Ask for forgiveness?
+					<button onclick="window.location.reload(false); ">Mercy Plz.</button>
+				</div>
+				<div ng-if="world.active == true ">
+					Keep you villagers alive by feeding them. Make them harvest and mine with scythes and pickaxes.
+					Make huts to expand your village.
+				</div>
 			</div>
 			<div id="villageView" ng-controller="gameCtrl">
 				<canvas height="400px" id="canvas">
@@ -22,7 +36,7 @@
 						<li>
 							Crop Health
 							<span class="tooltip stats">
-								{{ world.cropStatus}} {{ world.cropsEfficiency }}% <img src="CropIcon.png" alt="Food" height=18em width=18em>
+								{{ world.cropStatus.capitalize() }} {{ world.cropsEfficiency }}% <img src="CropIcon.png" alt="Food" height=18em width=18em>
 								<div class="tooltiptext">
 									Crops are {{ world.cropStatus}}. Gatherers are {{ 100-world.cropsEfficiency }}% likely to not work.
 								</div>
@@ -44,7 +58,12 @@
 					<ul>
 						<li ng-repeat="trade in tradeOptions">
 							{{trade.sell.number}} {{trade.sell.name}} → {{trade.buy.number}} {{trade.buy.name}}
-							<span class="trade" ng-click="exchange(trade)">Trade</span>
+							<span class="trade tooltip" ng-click="exchange(trade)">
+								Trade
+								<div class="tooltiptext" ng-if="trade.tooltip() != undefined">
+									{{trade.tooltip()}}
+								</div>
+							</span>
 						</li>
 					</ul>
 				</div>
@@ -52,9 +71,12 @@
 				<div class="box" ng-controller="possessionsCtrl">
 					<h3>Assets</h3>
 					<ul>
-						<li ng-repeat="person in possesions.villagers">
-							{{person.role.capitalize()}} {{person.name}} <span class="stats" ng-click="feed(person)">{{person.food}} <img src="Meat.png" alt="Food" height=18em width=18em> </span>
-						</li>
+						<div ng-repeat="hut in possesions.huts">
+							Hut {{hut.hutNumber+1}}
+							<li ng-repeat="person in hut.inhabitants">
+								 ‣ {{person.role.capitalize()}} {{person.name}} <span class="stats" ng-click="feed(person)">{{person.food}} <img src="Meat.png" alt="Food" height=18em width=18em> </span>
+							</li>
+						</div>
 						<hr>
 						<li ng-repeat="thing in possesions.materials">
 							{{thing.number}} {{thing.name}}
@@ -70,6 +92,7 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.js"></script>
 		<script src="name.js"></script>
 		<script src="villager.js"></script>
+		<script src="Rain.js"></script>
 		<script src="Hut.js"></script>
 		<script src="cam.js"></script>
 		<script src="app.js"></script>

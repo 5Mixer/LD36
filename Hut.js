@@ -16,9 +16,8 @@ var Hut = function(hutNumber){
 	this.x = 0;
 	this.y = 0;
 	this.inhabitants = [];
-	this.maxSize = 5;
+	this.maxSize = 3;
 	this.hutNumber = hutNumber;
-	console.log("New gut");
 }
 Hut.prototype.draw = function(c){
 	var location = hutLocations[0];
@@ -29,6 +28,5 @@ Hut.prototype.draw = function(c){
 	this.x = location.x*2; //Because the map is scale x2.
 	this.y = location.y*2;
 
-	console.log("Drawing hut at "+location.x+" : "+location.y);
 	c.drawImage(hutImg, 0,0,32,32, this.x, this.y, 64,64);
 }
