@@ -8,18 +8,20 @@ app.factory('village', function(){
 
 	var possesions = {
 		villagers : [
-			{ role: "", name: "Bob", food: Math.round(Math.random()*4)+6},
-			{ role: "", name: "Jeremy", food: Math.round(Math.random()*4)+6},
-			{ role: "", name: "Alice", food: Math.round(Math.random()*4)+6},
-			{ role: "", name: "Steve", food: Math.round(Math.random()*4)+6},
-			{ role: "", name: "Robin", food: Math.round(Math.random()*4)+6},
+			new Villager()
+
 		],
 		materials : [
 			{ name: "scythe", number: 3},
 			{ name: "pickaxe", number: 3},
-			{ name: "food", number: 173},
+			{ name: "food", number: 102},
 			{ name: "rock", number: 23}
-		]
+		],
+		huts: 1
+	}
+
+	for (var i=0; i<3; i++){
+		possesions.villagers.push(new Villager());
 	}
 
 	var world = {
@@ -58,9 +60,28 @@ app.factory('village', function(){
 
 
 
+
+
 app.controller('possessionsCtrl', function($scope,village){
 
+
+
 	$scope.possesions = village.possesions;
+
+	$scope.feed = function(person){
+
+
+		if (village.getMaterial("food").number > (10-person.food)){
+			village.addMaterial("food",-(10-person.food));
+			person.food = 10;
+		}else{
+			if ( village.getMaterial("food").number > 0){
+
+				person.food += village.getMaterial("food").number;
+				village.getMaterial("food").number = 0;
+			}
+		}
+	}
 });
 
 app.controller('statsCtrl', function($scope,village){
@@ -75,7 +96,13 @@ app.controller('statsCtrl', function($scope,village){
 
 });
 
+var theme = new Audio("Theme.wav"); // buffers automatically when created
+theme.loop = true
 
+theme.volume = 0.1;
+theme.play();
+
+var snd = new Audio("Exchange.wav"); // buffers automatically when created
 
 app.controller('tradeCtrl', function($scope,village){
 	$scope.tradeOptions = [
@@ -87,8 +114,16 @@ app.controller('tradeCtrl', function($scope,village){
 		{ sell: { number: 100, name: 'food'}, buy: { number: 1, name: 'villager'}}
 	];
 
+
 	$scope.exchange = function(trade){
 		console.log(village.possesions);
+
+        theme.pause();
+        snd.play();
+        snd.addEventListener('ended', function (){
+            theme.play()
+
+        });
 
 		var possesions = village.possesions;
 
@@ -121,7 +156,7 @@ app.controller('tradeCtrl', function($scope,village){
 		if (tradeAble){
 			//They have sold, give them the return.
 			if (trade.buy.name == "villager"){
-				village.possesions.villagers.push({ name: "Untitled", food: 10});
+				village.possesions.villagers.push(new Villager());
 			}else{
 
 				village.addMaterial(trade.buy.name,trade.buy.number);

@@ -39,20 +39,6 @@
 
 				</div>
 
-				<div id="possessions" ng-controller="possessionsCtrl">
-					<h3>Assets</h3>
-					<ul>
-						<li ng-repeat="person in possesions.villagers">
-							{{person.role.capitalize()}} {{person.name}} <span class="stats">{{person.food}} <img src="Meat.png" alt="Food" height=18em width=18em> </span>
-						</li>
-						<hr>
-						<li ng-repeat="thing in possesions.materials">
-							{{thing.number}} {{thing.name}}
-						</li>
-					</ul>
-
-				</div>
-
 				<div id="trading" ng-controller="tradeCtrl">
 					<h3>Trade with God</h3>
 					<ul>
@@ -62,11 +48,29 @@
 						</li>
 					</ul>
 				</div>
+
+				<div id="possessions" ng-controller="possessionsCtrl">
+					<h3>Assets</h3>
+					<ul>
+						<li ng-repeat="person in possesions.villagers">
+							{{person.role.capitalize()}} {{person.name}} <span class="stats" ng-click="feed(person)">{{person.food}} <img src="Meat.png" alt="Food" height=18em width=18em> </span>
+						</li>
+						<hr>
+						<li ng-repeat="thing in possesions.materials">
+							{{thing.number}} {{thing.name}}
+						</li>
+					</ul>
+
+				</div>
+
 			</div>
 
 		</div>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.js"></script>
+		<script src="name.js"></script>
+		<script src="villager.js"></script>
+		<script src="cam.js"></script>
 		<script src="app.js"></script>
 		<script src="gameCtrl.js"></script>
 

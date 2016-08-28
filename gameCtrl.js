@@ -1,55 +1,63 @@
 
+
 app.controller('gameCtrl', function($scope,village){
 
-	var cam = {
-		x: 0,
-		y: 0,
-		angle: 0,
-		transform: function (c){
-			c.save();
-			c.translate(-this.x,-this.y);
-			c.rotate(this.angle);
-		},
-		reset: function (c){
-			c.restore();
-		}
-	}
+
 
 	$scope.$watch( function () { return village.possesions.villagers; }, function (villagers) {
 
 		var numVillagers = villagers.length;
 		var avaliableScythes = village.getMaterial("scythe").number;
 		var avaliablePickaxes = village.getMaterial("pickaxe").number;
+
+
+
+
+		var farmerNumber = 0;
+		var minerNumber = 0;
+		var idleNumber = 0;
+
 		for (var i = 0; i < numVillagers; i++){
 			if (avaliableScythes > 0){
 				villagers[i].role = "farmer";
+				villagers[i].roleNumber = ++farmerNumber;
 				avaliableScythes--;
 				continue;
 			}
 			if (avaliablePickaxes > 0){
 				avaliablePickaxes--;
 				villagers[i].role = "miner";
+				villagers[i].roleNumber = ++minerNumber;
 				continue;
 			}
-			villagers[i].role = "";
+			villagers[i].role = "idle";
+			villagers[i].roleNumber = ++idleNumber;
 		}
 
 	 }, true);
 
-
-	$scope.day = village.world.day;
-
 	var cdom = document.getElementById("canvas");
 	var c = cdom.getContext("2d");
 
-	function nearestPow2( aSize ){
-	  return Math.pow( 2, Math.round( Math.log( aSize ) / Math.log( 2 ) ) );
+	window.addEventListener('mousemove', mouseMove, false);
+
+	function getMousePos(evt) {
+	    var rect = cdom.getBoundingClientRect();
+	    return {
+	      x: evt.clientX - rect.left,
+	      y: evt.clientY - rect.top
+	    };
+	}
+	function mouseMove (e){
+		var pos = getMousePos(e);
+		cam.x = Math.max(0,Math.min((pos.x/(cdom.width/50)),100));
+		cam.y = Math.max(0,Math.min((pos.y/(cdom.height/25)),50));
+
 	}
 
 	cdom.setAttribute('width', Math.floor(window.getComputedStyle(cdom).width/100)*100);
 	cdom.setAttribute('height', Math.floor(cdom.width/2));
 
-	cdom.imageSmoothingEnabled = false;
 
 	var tick = function(){
 		village.world.day++;
@@ -66,10 +74,17 @@ app.controller('gameCtrl', function($scope,village){
 		var playerLength = village.possesions.villagers.length;
 		for (var i=0; i<playerLength; i++){
 
-			village.addMaterial("food",1)
+			if ( village.possesions.villagers[i].role == "farmer"){
+				village.addMaterial("food",1)
+			}
+			if ( village.possesions.villagers[i].role == "miner"){
+				village.addMaterial("rock",1)
+			}
 
 		}
-		if (village.world.day % 5 == 0){
+
+
+		if (village.world.day % 3 == 0){
 			var n = playerLength;
 			while (n--){
 				village.possesions.villagers[n].food--;
@@ -93,8 +108,8 @@ app.controller('gameCtrl', function($scope,village){
 	var vignette = new Image();
 	vignette.src = "Vignette.png";
 
-	//setInterval(tick, 2000);
 
+	cdom.imageSmoothingEnabled = false;
 	c.mozImageSmoothingEnabled = false;
 	c.webkitImageSmoothingEnabled = false;
 	c.msImageSmoothingEnabled = false;
@@ -109,14 +124,20 @@ app.controller('gameCtrl', function($scope,village){
 
 		cam.transform(c);
 		c.drawImage(img, 0,0,200,100,0, 0, 400, 200);
+
+		for (var i=0; i < village.possesions.villagers.length; i++){
+			village.possesions.villagers[i].draw(c);
+		}
+
 		cam.reset(c);
 
 		c.save();
-		c.globalAlpha = Math.abs(Math.sin(60+ t/60)) * 0.3;
-		c.drawImage(vignette, 0,0, 400, 200);
+		c.globalAlpha = Math.abs(Math.sin(60+ t/60)) * 0.5;
+		c.drawImage(vignette, 0,0, cdom.width, cdom.height);
 		c.restore();
 
-		//cam.x = 50+Math.sin(t/100)*50
+		// cam.x = 50+Math.sin(t/100)*50
+		// cam.y = 50+Math.sin(t/50)*50
 
 
 		requestAnimationFrame(update);
