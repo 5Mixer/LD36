@@ -1,16 +1,10 @@
-
-
 app.controller('gameCtrl', function($scope,village){
-
-
 
 	$scope.$watch( function () { return village.possesions.villagers; }, function (villagers) {
 
 		var numVillagers = villagers.length;
 		var avaliableScythes = village.getMaterial("scythe").number;
 		var avaliablePickaxes = village.getMaterial("pickaxe").number;
-
-
 
 
 		var farmerNumber = 0;
@@ -75,7 +69,10 @@ app.controller('gameCtrl', function($scope,village){
 		for (var i=0; i<playerLength; i++){
 
 			if ( village.possesions.villagers[i].role == "farmer"){
-				village.addMaterial("food",1)
+				if (Math.random() > (Math.abs(village.world.cropsMoisture)*.1)){
+
+					village.addMaterial("food",1)
+				}
 			}
 			if ( village.possesions.villagers[i].role == "miner"){
 				village.addMaterial("rock",1)
@@ -128,6 +125,10 @@ app.controller('gameCtrl', function($scope,village){
 		for (var i=0; i < village.possesions.villagers.length; i++){
 			village.possesions.villagers[i].draw(c);
 		}
+		for (var i=0; i < village.possesions.huts.length; i++){
+			village.possesions.huts[i].draw(c);
+		}
+
 
 		cam.reset(c);
 

@@ -14,10 +14,10 @@ app.factory('village', function(){
 		materials : [
 			{ name: "scythe", number: 3},
 			{ name: "pickaxe", number: 3},
-			{ name: "food", number: 102},
+			{ name: "food", number: 802},
 			{ name: "rock", number: 23}
 		],
-		huts: 1
+		huts: []
 	}
 
 	for (var i=0; i<3; i++){
@@ -99,19 +99,21 @@ app.controller('statsCtrl', function($scope,village){
 var theme = new Audio("Theme.wav"); // buffers automatically when created
 theme.loop = true
 
-theme.volume = 0.1;
+theme.volume = 0.2;
 theme.play();
 
 var snd = new Audio("Exchange.wav"); // buffers automatically when created
+snd.volume = 0.4;
 
 app.controller('tradeCtrl', function($scope,village){
 	$scope.tradeOptions = [
-		{ sell: { number: 1, name: 'villager'}, buy: { number: 300, name: 'food'}},
+		{ sell: { number: 1, name: 'villager'}, buy: { number: 50, name: 'food'}},
 		{ sell: { number: 100, name: 'rock'}, buy: { name: 'sun'}},
 		{ sell: { number: 100, name: 'rock'}, buy: { name: 'rain'}},
 		{ sell: { number: 10, name: 'rock'}, buy: { number: 5, name: 'food'}},
 		{ sell: { number: 400, name: 'food'}, buy: { number: 1, name: 'hut'}},
-		{ sell: { number: 100, name: 'food'}, buy: { number: 1, name: 'villager'}}
+		{ sell: { number: 100, name: 'stone'}, buy: { number: 1, name: 'hut'}},
+		{ sell: { number: 200, name: 'food'}, buy: { number: 1, name: 'villager'}}
 	];
 
 
@@ -129,6 +131,8 @@ app.controller('tradeCtrl', function($scope,village){
 
 		var tradeAble = false;
 
+        console.log(trade);
+
 		if (trade.sell.name == "villager"){
 			if (village.possesions.villagers.length >= trade.sell.number){
 				tradeAble = true;
@@ -136,6 +140,7 @@ app.controller('tradeCtrl', function($scope,village){
 					village.possesions.villagers.splice(0,1);
 				}
 			}
+
 
 		}else{
 
@@ -157,6 +162,12 @@ app.controller('tradeCtrl', function($scope,village){
 			//They have sold, give them the return.
 			if (trade.buy.name == "villager"){
 				village.possesions.villagers.push(new Villager());
+            }else if (trade.buy.name == "hut") {
+                if (village.possesions.huts.length < 6){
+                    tradeAble = true;
+                    console.log("Making hut");
+                    village.possesions.huts.push(new Hut(village.possesions.huts.length));
+                }
 			}else{
 
 				village.addMaterial(trade.buy.name,trade.buy.number);
