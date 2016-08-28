@@ -1,14 +1,18 @@
 app = angular.module('game',[]);
 
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+}
+
 app.factory('village', function(){
 
 	var possesions = {
 		villagers : [
-			{ name: "Bob", food: Math.round(Math.random()*4)+6},
-			{ name: "Jeremy", food: Math.round(Math.random()*4)+6},
-			{ name: "Alice", food: Math.round(Math.random()*4)+6},
-			{ name: "Steve", food: Math.round(Math.random()*4)+6},
-			{ name: "Robin", food: Math.round(Math.random()*4)+6},
+			{ role: "", name: "Bob", food: Math.round(Math.random()*4)+6},
+			{ role: "", name: "Jeremy", food: Math.round(Math.random()*4)+6},
+			{ role: "", name: "Alice", food: Math.round(Math.random()*4)+6},
+			{ role: "", name: "Steve", food: Math.round(Math.random()*4)+6},
+			{ role: "", name: "Robin", food: Math.round(Math.random()*4)+6},
 		],
 		materials : [
 			{ name: "scythe", number: 3},
@@ -20,12 +24,24 @@ app.factory('village', function(){
 
 	var world = {
 		day:0,
-		weather: "rain"
+		weather: "rain",
+		cropsMoisture : 0, //Will vary between -2 (very dry) to 2 (flooded)
+		cropsEfficiency : 100
 	};
 
 	return {
 		possesions : possesions,
 		world : world,
+
+		getMaterial : function(name){
+			var arrayLength = possesions.materials.length;
+			for (var r = 0; r < arrayLength; r++) {
+				if (possesions.materials[r].name == name){
+
+					return possesions.materials[r];
+				}
+			}
+		},
 
 		addMaterial : function(name,number){
 			var arrayLength = possesions.materials.length;
@@ -46,9 +62,14 @@ app.controller('possessionsCtrl', function($scope,village){
 
 	$scope.possesions = village.possesions;
 });
+
 app.controller('statsCtrl', function($scope,village){
+	var cropStates = [ "very dry", "dry", "perfect", "wet", "very wet"]
 
 	$scope.$watch( function () { return village.world; }, function (world) {
+
+		world.cropsEfficiency = 100 - (Math.abs(world.cropsMoisture) * 10);
+		world.cropStatus = cropStates[world.cropsMoisture + 2]
 		$scope.world = world;
 	 }, true);
 
@@ -58,7 +79,9 @@ app.controller('statsCtrl', function($scope,village){
 
 app.controller('tradeCtrl', function($scope,village){
 	$scope.tradeOptions = [
-		{ sell: { number: 4, name: 'villager'}, buy: { number: 300, name: 'food'}},
+		{ sell: { number: 1, name: 'villager'}, buy: { number: 300, name: 'food'}},
+		{ sell: { number: 100, name: 'rock'}, buy: { name: 'sun'}},
+		{ sell: { number: 100, name: 'rock'}, buy: { name: 'rain'}},
 		{ sell: { number: 10, name: 'rock'}, buy: { number: 5, name: 'food'}},
 		{ sell: { number: 400, name: 'food'}, buy: { number: 1, name: 'hut'}},
 		{ sell: { number: 100, name: 'food'}, buy: { number: 1, name: 'villager'}}

@@ -15,6 +15,27 @@ app.controller('gameCtrl', function($scope,village){
 		}
 	}
 
+	$scope.$watch( function () { return village.possesions.villagers; }, function (villagers) {
+
+		var numVillagers = villagers.length;
+		var avaliableScythes = village.getMaterial("scythe").number;
+		var avaliablePickaxes = village.getMaterial("pickaxe").number;
+		for (var i = 0; i < numVillagers; i++){
+			if (avaliableScythes > 0){
+				villagers[i].role = "farmer";
+				avaliableScythes--;
+				continue;
+			}
+			if (avaliablePickaxes > 0){
+				avaliablePickaxes--;
+				villagers[i].role = "miner";
+				continue;
+			}
+			villagers[i].role = "";
+		}
+
+	 }, true);
+
 
 	$scope.day = village.world.day;
 
@@ -32,6 +53,16 @@ app.controller('gameCtrl', function($scope,village){
 
 	var tick = function(){
 		village.world.day++;
+
+		village.world.weather = Math.sin(village.world.day)+(Math.random()*.25)-.125 > 0.5 ? "sun" : "rain";
+
+		if (village.world.weather == "sun" && village.world.cropsMoisture > -2){
+			village.world.cropsMoisture--;
+		}
+		if (village.world.weather == "rain" && village.world.cropsMoisture < 2){
+			village.world.cropsMoisture++;
+		}
+
 		var playerLength = village.possesions.villagers.length;
 		for (var i=0; i<playerLength; i++){
 
@@ -53,10 +84,16 @@ app.controller('gameCtrl', function($scope,village){
 		$scope.$apply();
 	}
 
-	setInterval(tick, 1000);
+	setInterval(tick, 2000);
 
 	var img = new Image();
 	img.src = "Land.png";
+
+
+	var vignette = new Image();
+	vignette.src = "Vignette.png";
+
+	//setInterval(tick, 2000);
 
 	c.mozImageSmoothingEnabled = false;
 	c.webkitImageSmoothingEnabled = false;
@@ -74,7 +111,13 @@ app.controller('gameCtrl', function($scope,village){
 		c.drawImage(img, 0,0,200,100,0, 0, 400, 200);
 		cam.reset(c);
 
-		cam.x = 50+Math.sin(t/100)*50
+		c.save();
+		c.globalAlpha = Math.abs(Math.sin(60+ t/60)) * 0.3;
+		c.drawImage(vignette, 0,0, 400, 200);
+		c.restore();
+
+		//cam.x = 50+Math.sin(t/100)*50
+
 
 		requestAnimationFrame(update);
 	}

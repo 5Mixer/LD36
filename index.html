@@ -20,7 +20,13 @@
 					<h3>Village</h3>
 					<ul>
 						<li>
-							Crop Health <span class="stats">90% <img src="CropIcon.png" alt="Food" height=18em width=18em> </span>
+							Crop Health
+							<span class="tooltip stats">
+								{{ world.cropStatus}} {{ world.cropsEfficiency }}% <img src="CropIcon.png" alt="Food" height=18em width=18em>
+								<div class="tooltiptext">
+									Crops are {{ world.cropStatus}}. Gatherers takes {{ 100-world.cropsEfficiency }}% longer.
+								</div>
+							</span>
 						</li>
 						<li>
 							Weather
@@ -37,7 +43,7 @@
 					<h3>Assets</h3>
 					<ul>
 						<li ng-repeat="person in possesions.villagers">
-							Villager {{person.name}} <span class="stats">{{person.food}} <img src="Meat.png" alt="Food" height=18em width=18em> </span>
+							{{person.role.capitalize()}} {{person.name}} <span class="stats">{{person.food}} <img src="Meat.png" alt="Food" height=18em width=18em> </span>
 						</li>
 						<hr>
 						<li ng-repeat="thing in possesions.materials">
