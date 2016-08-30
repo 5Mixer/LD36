@@ -116,7 +116,7 @@ app.controller('tradeCtrl', function($scope,village){
 		{ sell: { number: 400, name: 'food'}, buy: { number: 1, name: 'hut'}},
 		{ sell: { number: 20, name: 'food'}, buy: { number: 1, name: 'pickaxe'}},
 		{ sell: { number: 50, name: 'rock'}, buy: { number: 1, name: 'scythe'}},
-		{ sell: { number: 100, name: 'stone'}, buy: { number: 1, name: 'hut'}},
+		{ sell: { number: 100, name: 'rock'}, buy: { number: 1, name: 'hut'}},
 		{ sell: { number: 200, name: 'food'}, buy: { number: 1, name: 'villager'}, tooltip: function(){
             var avaliableSpot = false;
             for (i=0; i < village.possesions.huts.length; i++){
