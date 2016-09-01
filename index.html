@@ -36,7 +36,7 @@
 						<li>
 							Crop Health
 							<span class="tooltip stats">
-								{{ world.cropStatus.capitalize() }} {{ world.cropsEfficiency }}% <img src="CropIcon.png" alt="Food" height=18em width=18em>
+								{{ world.cropStatus.capitalize() }} {{ world.cropsEfficiency }}% <img src="assets/CropIcon.png" alt="Food" height=18em width=18em>
 								<div class="tooltiptext">
 									Crops are {{ world.cropStatus}}. Gatherers are {{ 100-world.cropsEfficiency }}% likely to not work.
 								</div>
@@ -45,8 +45,8 @@
 						<li>
 							Weather
 							<span class="stats">
-								<span ng-if="world.weather=='sun'">Sun <img src="Sun.png" alt="" height=18em width=18em></span>
-								<span ng-if="world.weather=='rain'">Rain <img src="Rain.png" alt="" height=18em width=18em></span>
+								<span ng-if="world.weather=='sun'">Sun <img src="assets/Sun.png" alt="" height=18em width=18em></span>
+								<span ng-if="world.weather=='rain'">Rain <img src="assets/Rain.png" alt="" height=18em width=18em></span>
 							</span>
 						</li>
 					</ul>
@@ -74,7 +74,7 @@
 						<div ng-repeat="hut in possesions.huts">
 							Hut {{hut.hutNumber+1}}
 							<li ng-repeat="person in hut.inhabitants">
-								 ‣ {{person.role.capitalize()}} {{person.name}} <span class="stats" ng-click="feed(person)">{{person.food}} <img src="Meat.png" alt="Food" height=18em width=18em> </span>
+								 ‣ {{person.role.capitalize()}} {{person.name}} <span class="stats" ng-click="feed(person)">{{person.food}} <img src="assets/Meat.png" alt="Food" height=18em width=18em> </span>
 							</li>
 						</div>
 						<hr>

@@ -27,7 +27,7 @@ Rain.prototype.draw = function(c){
 }
 
 var rainImg = new Image();
-rainImg.src = "RainParticle.png";
+rainImg.src = "assets/RainParticle.png";
 
 var RainParticle = function(x){
 	this.x = x;

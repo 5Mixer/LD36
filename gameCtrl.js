@@ -53,7 +53,7 @@ app.controller('gameCtrl', function($scope,village){
 
 	$scope.$watch( function () { return [village.possesions.huts.length,village.possesions.villagers.length]; }, function (huts) {
 
- 		allocateHuts();
+ 	//	allocateHuts();
 
  	 }, true);
 
@@ -61,18 +61,28 @@ app.controller('gameCtrl', function($scope,village){
 	var c = cdom.getContext("2d");
 
 	window.addEventListener('mousemove', mouseMove, false);
+	window.addEventListener('touchmove', mouseMove, false);
 
 	function getMousePos(evt) {
 	    var rect = cdom.getBoundingClientRect();
+
+		var x = evt.clientX - rect.left
+		var y = evt.clientY - rect.top
+
+
+		if (x < 0 || x > window.getComputedStyle(cdom).width.slice(0,-2) || y < 0 || y > window.getComputedStyle(cdom).height.slice(0,-2)){
+			x = 200;
+			y = 50;
+		}
 	    return {
-	      x: evt.clientX - rect.left,
-	      y: evt.clientY - rect.top
+	      x: x,
+	      y: y
 	    };
 	}
 	function mouseMove (e){
 		var pos = getMousePos(e);
-		cam.x = Math.floor(Math.max(0,Math.min((pos.x/(cdom.width/50)),100)));
-		cam.y = Math.floor(Math.max(0,Math.min((pos.y/(cdom.height/25)),50)));
+		cam.targetx = Math.floor(Math.max(0,Math.min((pos.x/(cdom.width/50)),100)));
+		cam.targety = Math.floor(Math.max(0,Math.min((pos.y/(cdom.height/25)),50)));
 
 	}
 
@@ -141,11 +151,11 @@ app.controller('gameCtrl', function($scope,village){
 	setInterval(tick, 2000);
 
 	var img = new Image();
-	img.src = "Land.png";
+	img.src = "assets/Land.png";
 
 
 	var vignette = new Image();
-	vignette.src = "Vignette.png";
+	vignette.src = "assets/Vignette.png";
 
 
 	cdom.imageSmoothingEnabled = false;
@@ -157,8 +167,6 @@ app.controller('gameCtrl', function($scope,village){
 	var rain = new Rain();
 	rain.enabled = true;
 
-
-	console.log(cdom.width)
 
 	var t = 0;
 	var update = function () {

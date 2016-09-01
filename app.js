@@ -8,8 +8,6 @@ app.factory('village', function(){
 
 	var possesions = {
 		villagers : [
-			new Villager()
-
 		],
 		materials : [
 			{ name: "scythe", number: 3},
@@ -23,8 +21,9 @@ app.factory('village', function(){
         ]
 	}
 
-	for (var i=0; i<3; i++){
-		possesions.villagers.push(new Villager());
+    //HOW DO I DO THIS??? VILLAGERS NEED TO BE PUT IN HUTS - BUT HOW?
+	for (var i=0; i<4; i++){
+		possesions.villagers.push();
 	}
 
 	var world = {
@@ -34,6 +33,7 @@ app.factory('village', function(){
 		cropsEfficiency : 100,
         active : true
 	};
+
 
 	return {
 		possesions : possesions,
@@ -100,13 +100,13 @@ app.controller('statsCtrl', function($scope,village){
 
 });
 
-var theme = new Audio("Theme.wav"); // buffers automatically when created
+var theme = new Audio("assets/Theme.wav"); // buffers automatically when created
 theme.loop = true
 
 theme.volume = 0.2;
 theme.play();
 
-var snd = new Audio("Exchange.wav"); // buffers automatically when created
+var snd = new Audio("assets/Exchange.wav"); // buffers automatically when created
 snd.volume = 0.4;
 
 app.controller('tradeCtrl', function($scope,village){
@@ -185,7 +185,7 @@ app.controller('tradeCtrl', function($scope,village){
                 }
                 if (avaliableSpot){
 
-                    village.possesions.villagers.push(new Villager());
+                    village.possesions.villagers.push(new Villager(village));
                 }
             }else if (trade.buy.name == "hut") {
                 if (village.possesions.huts.length < 6){

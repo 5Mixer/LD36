@@ -1,5 +1,5 @@
 var hutImg = new Image();
-hutImg.src = "Hut.png";
+hutImg.src = "assets/Hut.png";
 
 var hutLocations = [
 	{x : 137, y: 21},

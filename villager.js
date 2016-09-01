@@ -1,5 +1,5 @@
 var villagerImg = new Image();
-villagerImg.src = "Villager.png";
+villagerImg.src = "assets/Villager.png";
 
 var locations = {
 	miner :
@@ -51,6 +51,15 @@ var Villager = function (){
 	var location = locations[this.role][0];
 	this.x = location.x*2; //Because the map is scale x2.
 	this.y = location.y*2;
+
+	// for (var i=0; i < village.possesions.huts.length; i++){
+	// 	//If the hut isn't full, put player in it.
+	// 	if (village.possesions.huts[i].inhabitants.length < village.possesions.huts[i].maxSize){
+	// 		this.hut = village.possesions.huts[i];
+	// 		village.possesions.huts[i].inhabitants.push(this);
+	// 		break;
+	// 	}
+	// }
 
 	this.roleNumber = 0; //1 = 1st miner/farmer/idler. There is a '0' for each role. *NOT UNIQUE*
 }
