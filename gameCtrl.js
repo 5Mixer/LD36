@@ -81,8 +81,11 @@ app.controller('gameCtrl', function($scope,village){
 	}
 	function mouseMove (e){
 		var pos = getMousePos(e);
-		cam.targetx = Math.floor(Math.max(0,Math.min((pos.x/(cdom.width/50)),100)));
-		cam.targety = Math.floor(Math.max(0,Math.min((pos.y/(cdom.height/25)),50)));
+		var width = window.getComputedStyle(cdom).width.slice(0,-2);
+
+		var height = window.getComputedStyle(cdom).height.slice(0,-2);
+		cam.targetx = Math.floor(Math.max(0,Math.min(    (pos.x/(width/100))   ,200)));
+		cam.targety = Math.floor(Math.max(0,Math.min(    (pos.y/(height/50))  ,100)));
 
 	}
 
